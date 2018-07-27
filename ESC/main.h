@@ -25,32 +25,32 @@
 #define LED1_OFF        PORTD &= ~(1<<PD2);
 #define LED1_TOGGLE     PORTD ^= (1<<PD2);
 
-#define PHASE_A_ENABLE_DDR  DDRD |= (1<<PD3);
-#define PHASE_A_ENABLE    PORTD |= (1<<PD3);
-#define PHASE_A_DISABLE    PORTD &= ~(1<<PD3);
+#define PHASE_A_SD_DDR_OUTPUT  DDRD |= (1<<PD3);
+#define PHASE_A_SD_HI    PORTD |= (1<<PD3);
+#define PHASE_A_SD_LO    PORTD &= ~(1<<PD3);
 
-#define PHASE_A_OUTPUT    DDRD |= (1<<PD7);
-#define PHASE_A_PWM      DDRD &= ~(1<<PD7);
-#define PHASE_A_ON      PORTD |= (1<<PD7);
-#define PHASE_A_OFF      PORTD &= ~(1<<PD7);
+#define PHASE_A_IN_DDR_OUTPUT    DDRD |= (1<<PD7);
+#define PHASE_A_IN_DDR_PWM      DDRD &= ~(1<<PD7);
+#define PHASE_A_IN_HI      PORTD |= (1<<PD7);
+#define PHASE_A_IN_LO      PORTD &= ~(1<<PD7);
 
-#define PHASE_B_ENABLE_DDR  DDRD |= (1<<PD4);
-#define PHASE_B_ENABLE    PORTD |= (1<<PD4);
-#define PHASE_B_DISABLE    PORTD &= ~(1<<PD4);
+#define PHASE_B_SD_DDR_OUTPUT  DDRD |= (1<<PD4);
+#define PHASE_B_SD_HI    PORTD |= (1<<PD4);
+#define PHASE_B_SD_LO    PORTD &= ~(1<<PD4);
 
-#define PHASE_B_OUTPUT    DDRB |= (1<<PB0);
-#define PHASE_B_PWM      DDRB &= ~(1<<PB0);
-#define PHASE_B_ON      PORTB |= (1<<PB0);
-#define PHASE_B_OFF      PORTB &= ~(1<<PB0);
+#define PHASE_B_IN_DDR_OUTPUT    DDRB |= (1<<PB0);
+#define PHASE_B_IN_DDR_PWM      DDRB &= ~(1<<PB0);
+#define PHASE_B_IN_HI      PORTB |= (1<<PB0);
+#define PHASE_B_IN_LO      PORTB &= ~(1<<PB0);
 
-#define PHASE_C_ENABLE_DDR  DDRD |= (1<<PD5);
-#define PHASE_C_ENABLE    PORTD |= (1<<PD5);
-#define PHASE_C_DISABLE    PORTD &= ~(1<<PD5);
+#define PHASE_C_SD_DDR_OUTPUT  DDRD |= (1<<PD5);
+#define PHASE_C_SD_HI    PORTD |= (1<<PD5);
+#define PHASE_C_SD_LO    PORTD &= ~(1<<PD5);
 
-#define PHASE_C_OUTPUT    DDRB |= (1<<PB2);
-#define PHASE_C_PWM      DDRB &= ~(1<<PB2);
-#define PHASE_C_ON      PORTB |= (1<<PB2);
-#define PHASE_C_OFF      PORTB &= ~(1<<PB2);
+#define PHASE_C_IN_DDR_OUTPUT    DDRB |= (1<<PB2);
+#define PHASE_C_IN_DDR_PWM      DDRB &= ~(1<<PB2);
+#define PHASE_C_IN_HI      PORTB |= (1<<PB2);
+#define PHASE_C_IN_LO      PORTB &= ~(1<<PB2);
 
 #define PWM_OUTPUT      DDRB |= (1<<PB1);
 #define PWM_ON        PORTB |= (1<<PB1);
