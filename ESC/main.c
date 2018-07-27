@@ -214,20 +214,38 @@ void start_up(uint16_t top, uint16_t pulse)
 	//commutate(5);
 	//_delay_ms(7);
 	
-	commutate(0);
-	_delay_ms(3);
-	commutate(1);
-	_delay_ms(30);
-	commutate(2);
-	_delay_ms(8);
+	uint16_t o = 10;
 
-	commutate(3);
-	_delay_ms(7);
-	commutate(4);
-	_delay_ms(6);
-	commutate(5);
-	_delay_ms(5);
+	for (uint8_t i = 0; i < 50; i++)
+	{
+		commutate(0);
 
+		for (uint8_t q = o; q > 0; q--)
+			_delay_ms(1);
+		
+		commutate(1);
+		for (uint8_t q = o; q > 0; q--)
+			_delay_ms(1);
+
+		commutate(2);
+		for (uint8_t q = o; q > 0; q--)
+			_delay_ms(1);
+
+		commutate(3);
+		for (uint8_t q = o; q > 0; q--)
+			_delay_ms(1);
+
+		commutate(4);
+		for (uint8_t q = o; q > 0; q--)
+			_delay_ms(1);
+
+		commutate(5);
+		for (uint8_t q = o; q > 0; q--)
+			_delay_ms(1);
+
+		if ((o > 5) && (i % 2))
+			o -= 1;
+	}
 
 	hard_commutation(100, top, pulse);
 
@@ -404,7 +422,7 @@ int main(void)
 
     // ================ enable interrupts ===============
 
-    TIMSK1 |= ((1<<OCIE1A) | (1<<TOIE1)); // interrupts for pwm toggle
+    //TIMSK1 |= ((1<<OCIE1A) | (1<<TOIE1)); // interrupts for pwm toggle
     //ACSR &= ~(1<<ACIE); // analog comparator interrupt disable
     //ACSR |= (1<<ACD); // set analog comparator disable
 	//ACSR |= (1<<ACIE); // analog comparator interrupt enable
