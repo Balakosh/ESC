@@ -30,110 +30,212 @@ void commutate(uint8_t sector)
 {
     switch (sector)
     {
-    case 0: // A pwm, B lo, c floating
-        PHASE_C_SD_LO
-        PHASE_A_IN_LO
-        PHASE_A_IN_DDR_PWM
-        PHASE_A_SD_HI
+    case 0:
+		// BEGIN - Working A=PWM C=LO B=float -> Sector 1
+		PHASE_A_SD_LO;
+		PHASE_B_SD_LO;
+		PHASE_C_SD_LO;
 
+		PHASE_A_IN_DDR_OUTPUT;
+		PHASE_A_IN_DDR_PWM;
+		PHASE_A_SD_HI;
+
+		PHASE_C_IN_DDR_OUTPUT;
+		PHASE_C_IN_LO;
+		PHASE_C_SD_HI;
+
+		PHASE_B_IN_DDR_OUTPUT;
+		PHASE_B_IN_HI;
+		PHASE_B_SD_LO;
+
+		// END - Working A=PWM C=LO B=float
         ADMUX |= (1<<MUX1);
         ADMUX &= ~(1<<MUX0);
         break;
-    case 1: // A hi, B floating, C lo
-        PHASE_C_SD_LO
-        PHASE_C_IN_LO
-        PHASE_C_IN_DDR_OUTPUT
-        PHASE_C_SD_HI
+    case 1:
+		// BEGIN - Working B=PWM C=LO A=float -> Sector 2
+		PHASE_A_SD_LO;
+		PHASE_B_SD_LO;
+		PHASE_C_SD_LO;
+		
+		PHASE_B_IN_DDR_OUTPUT;
+		PHASE_B_IN_DDR_PWM;
+		PHASE_B_SD_HI;
+
+		PHASE_C_IN_DDR_OUTPUT;
+		PHASE_C_IN_LO;
+		PHASE_C_SD_HI;
+
+		PHASE_A_IN_DDR_OUTPUT;
+		PHASE_A_IN_HI;
+		PHASE_A_SD_LO;
+		// END - Working B=PWM C=LO A=float
+
         ADMUX &= ~(1<<MUX1);
         ADMUX |= (1<<MUX0);
         break;
-    case 2: // A floating, B hi, C lo
-    	PHASE_A_SD_LO
-    	PHASE_B_IN_LO
-    	PHASE_B_IN_DDR_PWM
-    	PHASE_B_SD_HI
+    case 2:
+		// BEGIN - Working B=PWM A=LO C=float -> Sector 3
+		PHASE_A_SD_LO;
+		PHASE_B_SD_LO;
+		PHASE_C_SD_LO;
+		
+		PHASE_B_IN_DDR_OUTPUT;
+		PHASE_B_IN_DDR_PWM;
+		PHASE_B_SD_HI;
+
+		PHASE_A_IN_DDR_OUTPUT;
+		PHASE_A_IN_LO;
+		PHASE_A_SD_HI;
+
+		PHASE_C_IN_DDR_OUTPUT;
+		PHASE_C_IN_HI;
+		PHASE_C_SD_LO;
+		// END - Working B=PWM A=LO C=float
         ADMUX &= ~((1<<MUX0) | (1<<MUX1));
         break;
-    case 3: // A lo, B hi, C floating
-    	PHASE_C_SD_LO
-    	PHASE_A_IN_LO
-    	PHASE_A_IN_DDR_OUTPUT
-    	PHASE_A_SD_HI
+    case 3:
+		// BEGIN - Working C=PWM A=LO B=float -> Sector 4
+		PHASE_A_SD_LO;
+		PHASE_B_SD_LO;
+		PHASE_C_SD_LO;
+		
+		PHASE_C_IN_DDR_OUTPUT;
+		PHASE_C_IN_DDR_PWM;
+		PHASE_C_SD_HI;
+
+		PHASE_A_IN_DDR_OUTPUT;
+		PHASE_A_IN_LO;
+		PHASE_A_SD_HI;
+
+		PHASE_B_IN_DDR_OUTPUT;
+		PHASE_B_IN_HI;
+		PHASE_B_SD_LO;
+
+		// END - Working C=PWM A=LO B=float
         ADMUX |= (1<<MUX1);
         ADMUX &= ~(1<<MUX0);
         break;
-    case 4: // A lo, B floating, C hi
-        PHASE_C_SD_LO
-        PHASE_C_IN_LO
-        PHASE_C_IN_DDR_PWM
-        PHASE_C_SD_HI
+    case 4:
+		// BEGIN - C=PWM A=float B=LO -> Sector 5
+		PHASE_A_SD_LO;
+		PHASE_B_SD_LO;
+		PHASE_C_SD_LO;
+		
+		PHASE_C_IN_DDR_OUTPUT;
+		PHASE_C_IN_DDR_PWM;
+		PHASE_C_SD_HI;
+
+		PHASE_B_IN_DDR_OUTPUT;
+		PHASE_B_IN_LO;
+		PHASE_B_SD_HI;
+
+		PHASE_A_IN_DDR_OUTPUT;
+		PHASE_A_IN_HI;
+		PHASE_A_SD_LO;
+
+		// END - C=PWM A=float B=LO
         ADMUX &= ~(1<<MUX1);
         ADMUX |= (1<<MUX0);
         break;
-    case 5: // A floating, B lo, c hi
-    	PHASE_A_SD_LO
-    	PHASE_B_IN_LO
-    	PHASE_B_IN_DDR_OUTPUT
-    	PHASE_B_SD_HI
+    case 5:
+		// BEGIN - Working A=PWM B=LO C=float -> Sector 6
+		PHASE_A_SD_LO;
+		PHASE_B_SD_LO;
+		PHASE_C_SD_LO;
+		
+		PHASE_A_IN_DDR_OUTPUT;
+		PHASE_A_IN_DDR_PWM;
+		PHASE_A_SD_HI;
+
+		PHASE_B_IN_DDR_OUTPUT;
+		PHASE_B_IN_LO;
+		PHASE_B_SD_HI;
+
+		PHASE_C_IN_DDR_OUTPUT;
+		PHASE_C_IN_HI;
+		PHASE_C_SD_LO;
+
+		// END - Working A=PWM B=LO C=float
         ADMUX &= ~((1<<MUX0) | (1<<MUX1));
         break;
     }
     //PORTD ^= (1<<PD2); // Status LED
+	PORTC ^= (1 << PC3);
 }
 
-void start_up(uint16_t top, uint16_t pulse, uint16_t delayRepeater)
+void hard_commutation(uint16_t maxCount, uint16_t top, uint16_t pulse)
+{
+	ICR1 = top; // PWM Frequency
+	OCR1A = ICR1 - pulse; // Pulse
+
+	uint8_t sector = 0;
+	uint16_t counter = 1;
+	while(counter != maxCount)
+	{
+		commutate(sector);
+		sector++;
+		if (sector > 5)
+		{
+			sector = 0;
+		}
+		_delay_us(4000);
+		counter++;
+	}
+	PHASE_A_SD_LO;
+	PHASE_B_SD_LO;
+	PHASE_C_SD_LO;
+}
+
+void start_up(uint16_t top, uint16_t pulse)
 {
 	int tmp1 = ICR1;
 	int tmp2 = OCR1A;
 	ICR1 = top; // PWM Frequency
 	OCR1A = ICR1 - pulse; // Pulse
 
-	uint8_t sector = sectorVolatile;
+	PWM_OUTPUT;
+	PWM_ON;
+	PHASE_A_SD_DDR_OUTPUT;
+	PHASE_B_SD_DDR_OUTPUT;
+	PHASE_C_SD_DDR_OUTPUT;
+
+	//commutate(0);
+	//_delay_ms(3);
+	//commutate(1);
+	//_delay_ms(30);
+	//commutate(2);
+	//_delay_ms(15);
+	
+	//commutate(3);
+	//_delay_ms(50);
+	//commutate(4);
+	//_delay_ms(10);
+	//commutate(5);
+	//_delay_ms(7);
+	
+	commutate(0);
+	_delay_ms(3);
+	commutate(1);
+	_delay_ms(30);
+	commutate(2);
+	_delay_ms(8);
+
+	commutate(3);
+	_delay_ms(7);
 	commutate(4);
-	//_delay_ms(500);
+	_delay_ms(6);
 	commutate(5);
-//
-	//_delay_ms(500);
+	_delay_ms(5);
 
-	while(!((delayRepeater == 0) && (sector == 5)))
-	{
-		commutate(sector);
-		sector++;
 
-		if (sector > 5)
-		{
-			sector = 0;
-		}
+	hard_commutation(100, top, pulse);
 
-		for (int i = 0; i < delayRepeater; i++)
-		{
-			_delay_us(50);
-		}
-
-		if (delayRepeater > 0)
-			delayRepeater -= 1;
-	}
-	sectorVolatile = sector;
+	PHASE_A_SD_LO;
+	PHASE_B_SD_LO;
+	PHASE_C_SD_LO;
 	ICR1 = tmp1;
 	OCR1A = tmp2;
-}
-
-void hard_commutation(uint16_t top, uint16_t pulse)
-{
-	ICR1 = top; // PWM Frequency
-	OCR1A = ICR1 - pulse; // Pulse
-
-	uint8_t sector = 0;
-	while(1)
-	{
-		commutate(sector);
-		sector++;
-		if (sector > 5)
-		{
-			sector = 0;
-		}
-		_delay_ms(4);
-	}
 }
 
 ISR(ANALOG_COMP_vect) // zero crossing occured
@@ -240,9 +342,10 @@ int main(void)
     DDRB = 0xff;
     PORTB = 0x00;
     DDRB &= ~((1<<PB0) | (1<<PB2));
-
+	
     DDRC = 0x00;
     PORTC = 0x00;
+	DDRC |= (1<< PC3);
 
     DDRD = 0xff;
     PORTD = 0x00;
@@ -252,11 +355,9 @@ int main(void)
     //_delay_ms(100);
     //LED1_OFF
 	
-	USART_0_init();
-
-	_delay_us(100);
-
-	printf("esc program start!");
+	//USART_0_init();
+	//_delay_us(100);
+	//printf("esc program start!");
 
     // ================ TWI ====================
     //*
@@ -277,9 +378,9 @@ int main(void)
     // ================ pwm stuff =====================
     TCCR1A |=  (1<<COM1A1) | (1<<COM1A0); // phase correct pwm, inv mode
     TCCR1B |= (1<<WGM13) | (1<<CS10); // phase correct pwm, inverted mode
-    pwmPeriod = 750;
+    pwmPeriod = 2000;
     ICR1 = pwmPeriod; // PWM Period
-    pwmOn = 80;
+    pwmOn = 200;
     OCR1A = ICR1 - pwmOn; // Pulse
 
     // =============== mission time ================
@@ -296,10 +397,10 @@ int main(void)
 	//}
 
     // =================== start up ================
-    uint16_t top = 2000;
+    uint16_t top = 1000;
     uint16_t pulse = 200;
-    //start_up(top, pulse, 230); // minpulse not working
-    //hard_commutation(top, pulse);
+    start_up(top, pulse); // minpulse not working
+    //hard_commutation(100, top, pulse);
 
     // ================ enable interrupts ===============
 
@@ -310,263 +411,9 @@ int main(void)
     //sei();
     // =============== main programm ====================
 
-    uint16_t seconds = 0;
-    uint16_t ms = 0;
-
-
-	PWM_OUTPUT;
-
-	PWM_ON;
-	PHASE_A_SD_DDR_OUTPUT;
-	PHASE_B_SD_DDR_OUTPUT;
-	PHASE_C_SD_DDR_OUTPUT;
-
-
-	// BEGIN - Working A=PWM C=LO B=float -> Sector 1
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_DDR_PWM;
-	PHASE_A_SD_HI;
-
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_LO;
-	PHASE_C_SD_HI;
-
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_HI;
-	PHASE_B_SD_LO;
-
-	_delay_ms(3);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working A=PWM C=LO B=float
-
-	// BEGIN - Working B=PWM C=LO A=float -> Sector 2
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_DDR_PWM;
-	PHASE_B_SD_HI;
-
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_LO;
-	PHASE_C_SD_HI;
-
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_HI;
-	PHASE_A_SD_LO;
-
-	_delay_ms(20);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working B=PWM C=LO A=float
-
-	// BEGIN - Working B=PWM A=LO C=float -> Sector 3
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_DDR_PWM;
-	PHASE_B_SD_HI;
-
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_LO;
-	PHASE_A_SD_HI;
-
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_HI;
-	PHASE_C_SD_LO;
-
-	_delay_ms(8);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working B=PWM A=LO C=float
-
-	// BEGIN - Working C=PWM A=LO B=float -> Sector 4
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_DDR_PWM;
-	PHASE_C_SD_HI;
-
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_LO;
-	PHASE_A_SD_HI;
-
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_HI;
-	PHASE_B_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working C=PWM A=LO B=float
-
-	// BEGIN - C=PWM A=float B=LO -> Sector 5
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_DDR_PWM;
-	PHASE_C_SD_HI;
-
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_LO;
-	PHASE_B_SD_HI;
-
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_HI;
-	PHASE_A_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - C=PWM A=float B=LO
-
-	// BEGIN - Working A=PWM B=LO C=float -> Sector 6
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_DDR_PWM;
-	PHASE_A_SD_HI;
-
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_LO;
-	PHASE_B_SD_HI;
-
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_HI;
-	PHASE_C_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working A=PWM B=LO C=float
-
-
 	while(1)
 	{
-	// BEGIN - Working A=PWM C=LO B=float -> Sector 1
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_DDR_PWM;
-	PHASE_A_SD_HI;
-
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_LO;
-	PHASE_C_SD_HI;
-
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_HI;
-	PHASE_B_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working A=PWM C=LO B=float	
-
-	// BEGIN - Working B=PWM C=LO A=float -> Sector 2
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_DDR_PWM;
-	PHASE_B_SD_HI;
-
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_LO;
-	PHASE_C_SD_HI;
-
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_HI;
-	PHASE_A_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working B=PWM C=LO A=float
-	
-	// BEGIN - Working B=PWM A=LO C=float -> Sector 3
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_DDR_PWM;
-	PHASE_B_SD_HI;
-
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_LO;
-	PHASE_A_SD_HI;
-
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_HI;
-	PHASE_C_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working B=PWM A=LO C=float
-
-	// BEGIN - Working C=PWM A=LO B=float -> Sector 4
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_DDR_PWM;
-	PHASE_C_SD_HI;
-
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_LO;
-	PHASE_A_SD_HI;
-
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_HI;
-	PHASE_B_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working C=PWM A=LO B=float
-
-	// BEGIN - C=PWM A=float B=LO -> Sector 5
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_DDR_PWM;
-	PHASE_C_SD_HI;
-
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_LO;
-	PHASE_B_SD_HI;
-
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_HI;
-	PHASE_A_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - C=PWM A=float B=LO
-
-	// BEGIN - Working A=PWM B=LO C=float -> Sector 6
-	PHASE_A_IN_DDR_OUTPUT;
-	PHASE_A_IN_DDR_PWM;
-	PHASE_A_SD_HI;
-
-	PHASE_B_IN_DDR_OUTPUT;
-	PHASE_B_IN_LO;
-	PHASE_B_SD_HI;
-
-	PHASE_C_IN_DDR_OUTPUT;
-	PHASE_C_IN_HI;
-	PHASE_C_SD_LO;
-
-	_delay_ms(6);
-
-	PHASE_A_SD_LO;
-	PHASE_B_SD_LO;
-	PHASE_C_SD_LO;
-	// END - Working A=PWM B=LO C=float
-
 	}
-
 }
 
 
