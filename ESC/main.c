@@ -49,8 +49,8 @@ void commutate(uint8_t sector)
 		PHASE_B_SD_LO;
 
 		// END - Working A=PWM C=LO B=float
-        ADMUX |= (1<<MUX1);
-        ADMUX &= ~(1<<MUX0);
+		ADMUX &= ~(1<<MUX1);
+		ADMUX |= (1<<MUX0);
         break;
     case 1:
 		// BEGIN - Working B=PWM C=LO A=float -> Sector 2
@@ -71,8 +71,7 @@ void commutate(uint8_t sector)
 		PHASE_A_SD_LO;
 		// END - Working B=PWM C=LO A=float
 
-        ADMUX &= ~(1<<MUX1);
-        ADMUX |= (1<<MUX0);
+        ADMUX &= ~((1<<MUX0) | (1<<MUX1));
         break;
     case 2:
 		// BEGIN - Working B=PWM A=LO C=float -> Sector 3
@@ -92,7 +91,8 @@ void commutate(uint8_t sector)
 		PHASE_C_IN_HI;
 		PHASE_C_SD_LO;
 		// END - Working B=PWM A=LO C=float
-        ADMUX &= ~((1<<MUX0) | (1<<MUX1));
+        ADMUX |= (1<<MUX1);
+        ADMUX &= ~(1<<MUX0);
         break;
     case 3:
 		// BEGIN - Working C=PWM A=LO B=float -> Sector 4
@@ -113,8 +113,8 @@ void commutate(uint8_t sector)
 		PHASE_B_SD_LO;
 
 		// END - Working C=PWM A=LO B=float
-        ADMUX |= (1<<MUX1);
-        ADMUX &= ~(1<<MUX0);
+        ADMUX &= ~(1<<MUX1);
+        ADMUX |= (1<<MUX0);
         break;
     case 4:
 		// BEGIN - C=PWM A=float B=LO -> Sector 5
@@ -135,8 +135,7 @@ void commutate(uint8_t sector)
 		PHASE_A_SD_LO;
 
 		// END - C=PWM A=float B=LO
-        ADMUX &= ~(1<<MUX1);
-        ADMUX |= (1<<MUX0);
+        ADMUX &= ~((1<<MUX0) | (1<<MUX1));
         break;
     case 5:
 		// BEGIN - Working A=PWM B=LO C=float -> Sector 6
@@ -157,11 +156,12 @@ void commutate(uint8_t sector)
 		PHASE_C_SD_LO;
 
 		// END - Working A=PWM B=LO C=float
-        ADMUX &= ~((1<<MUX0) | (1<<MUX1));
+		ADMUX |= (1<<MUX1);
+		ADMUX &= ~(1<<MUX0);
         break;
     }
     //PORTD ^= (1<<PD2); // Status LED
-	PORTC ^= (1 << PC3);
+	//PORTC ^= (1 << PC3);
 }
 
 void hard_commutation(uint16_t maxCount, uint16_t top, uint16_t pulse)
@@ -398,7 +398,7 @@ int main(void)
     TCCR1B |= (1<<WGM13) | (1<<CS10); // phase correct pwm, inverted mode
     pwmPeriod = 2000;
     ICR1 = pwmPeriod; // PWM Period
-    pwmOn = 200;
+    pwmOn = 100;
     OCR1A = ICR1 - pwmOn; // Pulse
 
     // =============== mission time ================
@@ -422,15 +422,27 @@ int main(void)
 
     // ================ enable interrupts ===============
 
-    //TIMSK1 |= ((1<<OCIE1A) | (1<<TOIE1)); // interrupts for pwm toggle
-    //ACSR &= ~(1<<ACIE); // analog comparator interrupt disable
-    //ACSR |= (1<<ACD); // set analog comparator disable
-	//ACSR |= (1<<ACIE); // analog comparator interrupt enable
-    //sei();
+    TIMSK1 |= ((1<<OCIE1A) | (1<<TOIE1)); // interrupts for pwm toggle
+    ACSR &= ~(1<<ACIE); // analog comparator interrupt disable
+    ACSR |= (1<<ACD); // set analog comparator disable
+	ACSR |= (1<<ACIE); // analog comparator interrupt enable
+    sei();
     // =============== main programm ====================
+
+	uint16_t counter = 0;
 
 	while(1)
 	{
+		PORTC ^= (1 << PC3);
+		_delay_ms(1);
+		counter += 1;
+		if (counter > 2000)
+		{
+			PHASE_A_SD_LO;
+			PHASE_B_SD_LO;
+			PHASE_C_SD_LO;
+			return 0;
+		}
 	}
 }
 
