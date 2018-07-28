@@ -328,7 +328,7 @@ ISR(TWI_vect)
             TWCR &= ~((1<<TWSTO) | (1<<TWEA));
             break;
         case 0x88: // own address, data received
-            pwmOn = TWDR;
+            pwmOn = TWDR * 4;
             TWCR |= (1<<TWEA);
             break;
         case 0x98: // general call address, data received
@@ -433,9 +433,9 @@ int main(void)
 
 	while(1)
 	{
-		PORTC ^= (1 << PC3);
 		_delay_ms(1);
-		counter += 1;
+
+		counter += 0;
 		if (counter > 2000)
 		{
 			PHASE_A_SD_LO;
